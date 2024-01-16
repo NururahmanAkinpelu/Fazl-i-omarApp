@@ -35,11 +35,17 @@ namespace Backend.Implementation.Repositories
             return await _context.Set<T>().ToListAsync();
         }
 
+        public async Task<List<T>> GetAllByIdsAsync(List<Guid> ids)
+        {
+            return await _context.Set<T>()
+                .Where(t => ids.Contains(t.Id))
+                .ToListAsync();
+        }
+
         public async Task<IList<T>> GetByExpression(Expression<Func<T, bool>> expression)
         {
             var get = await _context.Set<T>().Where(expression).ToListAsync();
             return get;
         }
-
     }
 }

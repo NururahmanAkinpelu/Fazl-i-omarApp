@@ -12,6 +12,7 @@ namespace Backend.Interface.Repositories
         Task<T> Get(Expression<Func<T, bool>> expression);
 
         Task<IList<T>> GetAll();
+        Task<List<T>> GetAllByIdsAsync(List<Guid> ids);
 
         Task<IList<T>> GetByExpression(Expression<Func<T, bool>> expression);
     }

@@ -11,6 +11,6 @@ namespace Backend.Entities
         public string TeacherId{get;set;}
         public User User { get; set; }
         public Guid UserId { get; set; }
-        public IList<TeacherSubject> TeacherSubjects {get;set;}
+        public ICollection<TeacherSubject> TeacherSubjects {get;set;} = new HashSet<TeacherSubject>();
     }
 }
