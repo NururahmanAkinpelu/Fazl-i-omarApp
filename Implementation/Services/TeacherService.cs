@@ -4,30 +4,25 @@ using Backend.Entities;
 using Backend.Identity;
 using Backend.Interface.Repositories;
 using Backend.Services;
+using BackEnd.Interface.Repositories;
 
 namespace BackEnd.Services
 {
     public class TeacherService : ITeacherService
     {
-        private readonly ITeacherRepository _teacherRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ApplicationContext _context;
-        private readonly IUserRepository _userRepository;
-        private readonly IRoleRepository _roleRepository;
-        private readonly ISubjectRepository _subjectRepository;
 
 
-        public TeacherService(ITeacherRepository teacherRepository, IUserRepository userRepository, IRoleRepository roleRepository, ApplicationContext context, ISubjectRepository subjectRepository)
+        public TeacherService(IUnitOfWork unitOfWork,ITeacherRepository teacherRepository, IUserRepository userRepository, IRoleRepository roleRepository, ApplicationContext context, ISubjectRepository subjectRepository)
         {
-            _teacherRepository = teacherRepository;
-            _userRepository = userRepository;
-            _roleRepository = roleRepository;
+            _unitOfWork = unitOfWork;
             _context = context;
-           _subjectRepository = subjectRepository;
         }
         public async Task<BaseResponse<TeacherDto>> Register(TeacherDto teacherDto)
         {
             var response = new BaseResponse<TeacherDto>();
-            var isTeacherExist = await _teacherRepository.Get(t => t.Email == teacherDto.Email);
+            var isTeacherExist = await _unitOfWork.Teacher.Get(t => t.Email == teacherDto.Email);
             if (isTeacherExist is not null)
             {
                 response.Message = "Teacher already exist";
@@ -48,9 +43,9 @@ namespace BackEnd.Services
                 Email = teacherDto.Email
             };
             
-            await _userRepository.Register(user);
+            await _unitOfWork.User.Register(user);
             
-            var role = await _roleRepository.Get(r => r.Name == "Teacher");
+            var role = await _unitOfWork.Role.Get(r => r.Name == "Teacher");
             if (role == null)
             {
                 
@@ -65,7 +60,7 @@ namespace BackEnd.Services
             };
            _context.UserRoles.Add(userRole);
 
-           var subjects = await _subjectRepository.GetAllByIdsAsync(teacherDto.SubjectIds);
+           var subjects = await _unitOfWork.Subject.GetAllByIdsAsync(teacherDto.SubjectIds);
 
            var teacherSubjects = new HashSet<TeacherSubject>();
            foreach (var subject in subjects)
@@ -83,7 +78,7 @@ namespace BackEnd.Services
            teacher.TeacherSubjects = teacherSubjects;
            teacher.User = user;
             
-            await _teacherRepository.Register(teacher);
+            await _unitOfWork.Teacher.Register(teacher);
             response.Message = "Created successfully";
             response.Status = true;
             return response;
@@ -92,7 +87,7 @@ namespace BackEnd.Services
         public async Task<BaseResponse<TeacherDto>> Get(Guid id)
         {
             var response = new BaseResponse<TeacherDto>();
-            var teacher = await _teacherRepository.Get(t => t.Id == id);
+            var teacher = await _unitOfWork.Teacher.Get(t => t.Id == id);
 
             if (teacher == null)
             {
@@ -116,7 +111,7 @@ namespace BackEnd.Services
         public async Task<BaseResponse<TeacherDto>> Get(string email)
         {
             var response = new BaseResponse<TeacherDto>();
-            var teacher = await _teacherRepository.Get(t => t.Email == email);
+            var teacher = await _unitOfWork.Teacher.Get(t => t.Email == email);
 
             if (teacher == null)
             {
@@ -140,7 +135,7 @@ namespace BackEnd.Services
         public async Task<BaseResponse<IEnumerable<TeacherDto>>> GetAll()
         {
             var response = new BaseResponse<IEnumerable<TeacherDto>>();
-            var teachers = await _teacherRepository.GetAll();
+            var teachers = await _unitOfWork.Teacher.GetAll();
             if (teachers == null || teachers.Count == 0)
             {
                 response.Message = "No teachers found";
@@ -164,7 +159,7 @@ namespace BackEnd.Services
         public async Task<BaseResponse<TeacherDto>> Update(TeacherDto teacherDto, Guid id)
         {
             var response = new BaseResponse<TeacherDto>();
-            var teacher = await _teacherRepository.Get(t => t.Id == id);
+            var teacher = await _unitOfWork.Teacher.Get(t => t.Id == id);
             if (teacher is null)
             {
                 response.Message = "Subject not found";
@@ -174,7 +169,7 @@ namespace BackEnd.Services
             teacher.FirstName = teacherDto.FirstName;
             teacher.LastName = teacherDto.LastName;
             teacher.Email = teacherDto.Email;
-            await _teacherRepository.Update(teacher);
+            await _unitOfWork.Teacher.Update(teacher);
             response.Message = "Success";
             response.Status = true;
             return response;
@@ -183,7 +178,7 @@ namespace BackEnd.Services
         public async Task<BaseResponse<TeacherDto>> Delete(Guid id)
         {
             var response = new BaseResponse<TeacherDto>();
-            var teacher = await _teacherRepository.Get(t => t.Id == id);
+            var teacher = await _unitOfWork.Teacher.Get(t => t.Id == id);
 
             if (teacher is null)
             {
@@ -198,7 +193,7 @@ namespace BackEnd.Services
             }
 
             teacher.IsDeleted = true;
-            await _teacherRepository.Update(teacher);
+            await _unitOfWork.Teacher.Update(teacher);
             response.Message = "Deleted Successfully";
             response.Status = true;
             return response;
