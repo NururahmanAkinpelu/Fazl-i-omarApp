@@ -42,6 +42,11 @@ namespace Backend.Implementation.Repositories
                 .ToListAsync();
         }
 
+        public async Task<bool> ExistsAsync(Expression<Func<T, bool>> expression)
+        {
+            return await _context.Set<T>().AnyAsync(expression);
+        }
+
         public async Task<IList<T>> GetByExpression(Expression<Func<T, bool>> expression)
         {
             var get = await _context.Set<T>().Where(expression).ToListAsync();

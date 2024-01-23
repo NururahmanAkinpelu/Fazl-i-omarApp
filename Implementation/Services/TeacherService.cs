@@ -6,7 +6,7 @@ using Backend.Interface.Repositories;
 using Backend.Services;
 using BackEnd.Interface.Repositories;
 
-namespace BackEnd.Services
+namespace Backend.Services
 {
     public class TeacherService : ITeacherService
     {
@@ -14,7 +14,7 @@ namespace BackEnd.Services
         private readonly ApplicationContext _context;
 
 
-        public TeacherService(IUnitOfWork unitOfWork,ITeacherRepository teacherRepository, IUserRepository userRepository, IRoleRepository roleRepository, ApplicationContext context, ISubjectRepository subjectRepository)
+        public TeacherService(IUnitOfWork unitOfWork, ApplicationContext context)
         {
             _unitOfWork = unitOfWork;
             _context = context;
