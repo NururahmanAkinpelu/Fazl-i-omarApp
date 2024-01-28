@@ -1,6 +1,8 @@
-﻿namespace Backend.Interface.Repositories
+﻿using Backend.Entities;
+
+namespace Backend.Interface.Repositories
 {
-    public interface IResultRepository
+    public interface IResultRepository : IBaseRepository<Result>
     {
     }
 }

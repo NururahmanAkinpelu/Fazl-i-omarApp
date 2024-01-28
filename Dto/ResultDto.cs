@@ -6,6 +6,8 @@ namespace Backend.Dto
     {
         public Guid Id { get; set; }
         public string SubjectName { get; set; }
+        public string StudentName { get; set; }
+        public string Level { get; set; }
         public double ContinuousAssessment { get; set; }
         public double ExamScore { get; set; }
         public Terms Terms { get; set; }

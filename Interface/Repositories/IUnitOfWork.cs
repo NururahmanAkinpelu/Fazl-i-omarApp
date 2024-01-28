@@ -1,13 +1,10 @@
-
 using Backend.Interface.Repositories;
-using Backend.Repositories;
 
 namespace BackEnd.Interface.Repositories
 {
     public interface IUnitOfWork : IDisposable
     {
         IAdminRepository Admin { get; }
-        IGradeRepository Grade { get; }
         ILevelRepository Level { get; }
         IRoleRepository Role { get; }
         IResultRepository Result { get; }

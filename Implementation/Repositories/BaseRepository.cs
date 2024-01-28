@@ -23,6 +23,15 @@ namespace Backend.Implementation.Repositories
             await _context.SaveChangesAsync();
             return entity;
         }
+        
+        public async Task<T> GetAsync(Guid id)
+        {
+            return await _context.Set<T>().FindAsync(id);
+        }
+        // public T Get(Guid id)
+        // {
+        //     return _context.Set<T>().Find(id);
+        // }
 
         public async Task<T> Get(Expression<Func<T, bool>> expression)
         {

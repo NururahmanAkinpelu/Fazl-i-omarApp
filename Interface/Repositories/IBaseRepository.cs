@@ -8,9 +8,9 @@ namespace Backend.Interface.Repositories
         Task<T> Register(T entity);
 
         Task<T> Update(T entity);
-
+        Task<T> GetAsync(Guid id);
+        // T Get(Guid id);
         Task<T> Get(Expression<Func<T, bool>> expression);
-
         Task<IList<T>> GetAll();
         Task<List<T>> GetAllByIdsAsync(List<Guid> ids);
         Task<bool> ExistsAsync(Expression<Func<T, bool>> expression);

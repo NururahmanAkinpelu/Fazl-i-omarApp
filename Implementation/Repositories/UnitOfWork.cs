@@ -1,6 +1,5 @@
 using Backend.Context;
 using Backend.Interface.Repositories;
-using Backend.Repositories;
 using BackEnd.Interface.Repositories;
 
 namespace BackEnd.Repositories
@@ -11,7 +10,6 @@ namespace BackEnd.Repositories
         private bool _disposed = false;
         
         public IAdminRepository Admin { get; }
-        public IGradeRepository Grade { get; }
         public ILevelRepository Level { get; }
         public IRoleRepository Role { get; }
         public IResultRepository Result { get; }
@@ -24,7 +22,6 @@ namespace BackEnd.Repositories
         public UnitOfWork(
             ApplicationContext context,
             IAdminRepository adminRepository,
-            IGradeRepository gradeRepository,
             ILevelRepository levelRepository,
             IRoleRepository roleRepository,
             IResultRepository resultRepository,
@@ -37,7 +34,6 @@ namespace BackEnd.Repositories
         {
             _context = context;
             Admin = adminRepository;
-            Grade = gradeRepository;
             Level = levelRepository;
             Role = roleRepository;
             Result = resultRepository;
