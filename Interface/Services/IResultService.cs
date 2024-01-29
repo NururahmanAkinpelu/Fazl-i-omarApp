@@ -9,6 +9,6 @@ namespace Backend.Interface.Services
         Task<BaseResponse<ResultDto>> Update(ResultDto resultDto, Guid resultId);
         Task<BaseResponse<ResultDto>> Get(Guid id);
         Task<BaseResponse<ResultDto>> Delete(Guid resultId);
-        Task<BaseResponse<IEnumerable<ResultDto>>> GetAll();
+        Task<BaseResponse<IEnumerable<ResultDto>>> GetAll(Guid studentId);
     }
 }

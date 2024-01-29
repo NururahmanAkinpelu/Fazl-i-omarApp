@@ -162,7 +162,7 @@ namespace Backend.Services
             var teacher = await _unitOfWork.Teacher.Get(t => t.Id == id);
             if (teacher is null)
             {
-                response.Message = "Subject not found";
+                response.Message = "Teacher not found";
                 return response;
             }
 

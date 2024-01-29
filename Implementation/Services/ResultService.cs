@@ -2,6 +2,7 @@ using Backend.Dto;
 using Backend.Entities;
 using Backend.Interface.Services;
 using BackEnd.Interface.Repositories;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 
 namespace Backend.Services
 {
@@ -12,7 +13,8 @@ namespace Backend.Services
         {
             _unitOfWork = unitOfWork;
         }
-        public async Task<BaseResponse<ResultDto>> Create(ResultDto resultDto, Guid studentId, Guid subjectId, Guid levelId)
+        public async Task<BaseResponse<ResultDto>> Create(
+            ResultDto resultDto, Guid studentId, Guid subjectId, Guid levelId)
         {
             var response = new BaseResponse<ResultDto>();
 
@@ -109,14 +111,51 @@ namespace Backend.Services
             return response;
         }
 
-        public Task<BaseResponse<IEnumerable<ResultDto>>> GetAll()
+        public async Task<BaseResponse<IEnumerable<ResultDto>>> GetAll(Guid studentId)
         {
-            throw new NotImplementedException();
+            var response = new BaseResponse<IEnumerable<ResultDto>>();
+            var session = await _unitOfWork.Session.Get(s => s.CurrentSession == true);
+            var result = await _unitOfWork.Result.GetAllResult(r => (r.StudentId == studentId) && (r.Session == session));
+            
+            if (result is null)
+            {
+                response.Message = "Result is not availlable currently";
+                return response;
+            }
+
+            response.Data = result.Select(
+                result => new ResultDto{
+                    StudentName = $"{result.Student.FirstName} {result.Student.LastName}",
+                    SubjectName = result.Subject.Name,
+                    Level = result.Level.LevelName,
+                    ContinuousAssessment = result.ContinuousAssessment,
+                    ExamScore = result.ExamScore,
+                    TotalScore = result.TotalScore 
+
+            }).ToList();
+            response.Message = "Success";
+            response.Status = true;
+            return response;
         }
 
-        public Task<BaseResponse<ResultDto>> Update(ResultDto resultDto, Guid resultId)
+        public async Task<BaseResponse<ResultDto>> Update(ResultDto resultDto, Guid resultId)
         {
-            throw new NotImplementedException();
+            var response = new BaseResponse<ResultDto>();
+            var result = await _unitOfWork.Result.Get(r => r.Id == resultId);
+
+            if (result == null)
+            {
+                response.Message = "result not found";
+                return response;
+            }
+
+            result.ContinuousAssessment = resultDto.ContinuousAssessment;
+            result.ExamScore = resultDto.ExamScore;
+            result.TotalScore = resultDto.TotalScore;
+            await _unitOfWork.Result.Update(result);
+            response.Message = "Success";
+            response.Status = true;
+            return response;
         }
     }
 }
