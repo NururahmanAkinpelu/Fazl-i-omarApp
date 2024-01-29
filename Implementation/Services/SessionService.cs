@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Backend.Dto;
 using Backend.Entities;
 using Backend.Interface.Services;
@@ -41,9 +37,28 @@ namespace Backend.Services
        return response;
     }
 
-    public Task<BaseResponse<SessionDto>> Delete(Guid sessionId)
+    public async Task<BaseResponse<SessionDto>> Delete(Guid sessionId)
     {
-        throw new NotImplementedException();
+        var response = new BaseResponse<SessionDto>();
+        var session = await _unitOfWork.Session.Get(t => t.Id == sessionId);
+
+        if (session is null)
+        {
+            response.Message = "Session not found";
+            return response;
+        }
+
+        if (session.IsDeleted == true)
+        {
+            response.Message = "Session already deleted";
+            return response;
+        }
+
+        session.IsDeleted = true;
+        await _unitOfWork.Session.Update(session);
+        response.Message = "Deleted Successfully";
+        response.Status = true;
+        return response;
     }
 
     public async Task<BaseResponse<IEnumerable<SessionDto>>> GetAll()
@@ -70,9 +85,23 @@ namespace Backend.Services
         return response;
     }
 
-    public Task<BaseResponse<SessionDto>> Update(SessionDto sessionDto, Guid sessionId)
+    public async Task<BaseResponse<SessionDto>> Update(SessionDto sessionDto, Guid sessionId)
     {
-        throw new NotImplementedException();
+        var response = new BaseResponse<SessionDto>();
+            var session = await _unitOfWork.Session.Get(t => t.Id == sessionId);
+            if (session is null)
+            {
+                response.Message = "Session not found";
+                return response;
+            }
+
+            session.SessionName = sessionDto.SessionName;
+            session.StartDate = sessionDto.StartDate;
+            session.EndDate = sessionDto.EndDate;
+            await _unitOfWork.Session.Update(session);
+            response.Message = "Success";
+            response.Status = true;
+            return response;
     }
 }
 }
