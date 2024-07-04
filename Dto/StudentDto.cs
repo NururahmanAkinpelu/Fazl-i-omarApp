@@ -11,7 +11,7 @@ namespace Backend.Dto
         public string Email { get; set; }
         public string Password { get; set; }
         public string StudentId { get; set; }
-        //public Guid? LevelId { get; set; }
+        public Guid? LevelId { get; set; }
         public string LevelName { get; set; }
         public IList<StudentSubject> StudentSubjects { get; set; }
     }

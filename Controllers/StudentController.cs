@@ -43,6 +43,14 @@ namespace Backend.Controllers
             return result.Status ? Ok(result) : BadRequest(result);
         }
 
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _studentService.GetAll();
+            return result.Status ? Ok(result) : BadRequest(result);
+        }
+        
+
         [HttpGet("GetAll/{levelId}")]
         public async Task<IActionResult> GetAll(Guid levelId)
         {

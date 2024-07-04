@@ -16,7 +16,9 @@ namespace Backend.Implementation.Services
         private readonly IUserRepository _userRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly ILevelRepository _levelRepository;
-        public StudentService(IStudentRepository studentRepository, IUserRepository userRepository, IRoleRepository roleRepository, ApplicationContext context, ILevelRepository levelRepository)
+        public StudentService(IStudentRepository studentRepository,
+        IUserRepository userRepository, IRoleRepository roleRepository,
+        ApplicationContext context, ILevelRepository levelRepository)
         {
             _context = context;
             _studentRepository = studentRepository;
@@ -97,9 +99,32 @@ namespace Backend.Implementation.Services
             };
         }
 
-        Task<BaseResponse<IEnumerable<StudentDto>>> IStudentService.GetAll()
+        public async Task<BaseResponse<IEnumerable<StudentDto>>> GetAll()
         {
-            throw new NotImplementedException();
+            var students = await _studentRepository.GetAll();
+            if (students == null)
+            {
+                return new BaseResponse<IEnumerable<StudentDto>>
+                {
+                    Message = "no getStudent in this level",
+                    Status = false
+                };
+            }
+
+            var studentDtos = students.Select(s => new StudentDto
+            {
+                Id = s.Id,
+                FirstName = s.FirstName,
+                LastName = s.LastName,
+                LevelName = s.LastName,
+                Email = s.Email,
+            }).ToList();
+            return new BaseResponse<IEnumerable<StudentDto>>
+            {
+                Message = "list of students",
+                Status = true,
+                Data = studentDtos
+            };
         }
 
         public async Task<BaseResponse<IEnumerable<StudentDto>>> GetAll(Guid levelId)
@@ -109,7 +134,7 @@ namespace Backend.Implementation.Services
             {
                 return new BaseResponse<IEnumerable<StudentDto>>
                 {
-                    Message = "no getStudent in this level",
+                    Message = "no Student registered in this level",
                     Status = false
                 };
             }
