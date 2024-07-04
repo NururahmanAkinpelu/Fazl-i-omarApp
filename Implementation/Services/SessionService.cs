@@ -1,5 +1,6 @@
 using Backend.Dto;
 using Backend.Entities;
+using Backend.Interface.Repositories;
 using Backend.Interface.Services;
 using BackEnd.Interface.Repositories;
 
@@ -8,9 +9,11 @@ namespace Backend.Services
     public class SessionService : ISessionService
 {
     public IUnitOfWork _unitOfWork;
-    public SessionService(IUnitOfWork unitOfWork)
+    public ISessionRepository _sessionRepository;
+    public SessionService(IUnitOfWork unitOfWork, ISessionRepository sessionRepository)
     {
         _unitOfWork = unitOfWork;
+        _sessionRepository = sessionRepository;
     }
     public async Task<BaseResponse<SessionDto>> Create(SessionDto sessionDto)
     {
@@ -61,6 +64,27 @@ namespace Backend.Services
         return response;
     }
 
+    public async Task<BaseResponse<SessionDto>> Get(Guid id)
+    {
+        var response = new BaseResponse<SessionDto>();
+        var session = await _sessionRepository.Get(s => s.Id == id);
+        if (session is null)
+        {
+            response.Message = "Not found";
+            return response;
+        }
+
+        var sessionDto = new SessionDto
+        {
+            SessionName = session.SessionName,
+            StartDate = session.StartDate,
+            EndDate = session.EndDate
+        };
+        response.Data = session;
+        response.Message = "Success";
+        response.Status = true;
+        return response;
+    }
     public async Task<BaseResponse<IEnumerable<SessionDto>>> GetAll()
     {
         var response = new BaseResponse<IEnumerable<SessionDto>>();
