@@ -80,7 +80,7 @@ namespace Backend.Services
             StartDate = session.StartDate,
             EndDate = session.EndDate
         };
-        response.Data = session;
+        response.Data = sessionDto;
         response.Message = "Success";
         response.Status = true;
         return response;
@@ -112,20 +112,20 @@ namespace Backend.Services
     public async Task<BaseResponse<SessionDto>> Update(SessionDto sessionDto, Guid sessionId)
     {
         var response = new BaseResponse<SessionDto>();
-            var session = await _unitOfWork.Session.Get(t => t.Id == sessionId);
-            if (session is null)
-            {
-                response.Message = "Session not found";
-                return response;
-            }
-
-            session.SessionName = sessionDto.SessionName;
-            session.StartDate = sessionDto.StartDate;
-            session.EndDate = sessionDto.EndDate;
-            await _unitOfWork.Session.Update(session);
-            response.Message = "Success";
-            response.Status = true;
+        var session = await _unitOfWork.Session.Get(l => l.Id == sessionId);
+        if (session is null)
+        {
+            response.Message = "Session not found";
             return response;
+        }
+
+        session.SessionName = sessionDto.SessionName;
+        session.StartDate = sessionDto.StartDate;
+        session.EndDate = sessionDto.EndDate;
+        await _unitOfWork.Session.Update(session);
+        response.Message = "Success";
+        response.Status = true;
+        return response;
     }
 }
 }

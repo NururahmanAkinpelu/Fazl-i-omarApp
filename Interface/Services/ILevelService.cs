@@ -7,6 +7,6 @@ namespace Backend.Interface.Services
         Task<BaseResponse<LevelDto>> Create(LevelDto levelDto);
         Task<BaseResponse<LevelDto>> Update(LevelDto levelDto, Guid levelId);
         Task<BaseResponse<LevelDto>> Delete(Guid levelId);
-        Task<BaseResponse<LevelDto>> GetAll();
+        Task<BaseResponse<IEnumerable<LevelDto>>> GetAll();
     }
 }

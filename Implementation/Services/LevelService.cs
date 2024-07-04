@@ -42,19 +42,67 @@ namespace Backend.Implementation.Services
             };
         }
 
-        Task<BaseResponse<LevelDto>> ILevelService.Delete(Guid levelId)
+        public async Task<BaseResponse<LevelDto>> Delete(Guid levelId)
         {
-            throw new NotImplementedException();
+            var response = new BaseResponse<LevelDto>();
+            var level = await _levelRepository.Get(l => l.Id == levelId);
+
+            if (level is null)
+            {
+                response.Message = "Not found";
+                return response;
+            }
+
+            if (level.IsDeleted == true)
+            {
+                response.Message = "level already deleted";
+                return response;
+            }
+
+            level.IsDeleted = true;
+            await _levelRepository.Update(level);
+            response.Message = "Deleted Successfully";
+            response.Status = true;
+            return response;
         }
 
-        Task<BaseResponse<LevelDto>> ILevelService.GetAll()
+        public async Task<BaseResponse<IEnumerable<LevelDto>>> GetAll()
         {
-            throw new NotImplementedException();
+            var response = new BaseResponse<IEnumerable<LevelDto>>();
+            var levels = await _levelRepository.GetAll();
+
+            if (levels is null)
+            {
+                response.Message = "No level found";
+                return response;
+            }
+
+            var levelDtos = levels.Select(l => new LevelDto{
+                Id = l.Id,
+                LevelName = l.LevelName
+            }).ToList();
+
+            response.Data = levelDtos;
+            response.Message = "Success";
+            response.Status = true;
+            return response;
         }
 
-        Task<BaseResponse<LevelDto>> ILevelService.Update(LevelDto levelDto, Guid levelId)
+        public async Task<BaseResponse<LevelDto>> Update(LevelDto levelDto, Guid levelId)
         {
-            throw new NotImplementedException();
+            var response = new BaseResponse<LevelDto>();
+            var level = await _levelRepository.Get(l => l.Id == levelId);
+            if (level is null)
+            {
+                response.Message = "Not found";
+                return response;
+            }
+
+            level.LevelName = levelDto.LevelName;
+            await _levelRepository.Update(level);
+            response.Message = "Success";
+            response.Status = true;
+            return response;
         }
     }
 }

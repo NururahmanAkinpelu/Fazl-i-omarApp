@@ -21,5 +21,26 @@ namespace Backend.Controllers
             var result = await _levelService.Create(levelDto);
             return result.Status ? Ok(result) : BadRequest(result);
         }
+
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _levelService.GetAll();
+            return result.Status ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpPut("Update/{id}")]
+        public async Task<IActionResult> Update(Guid id, LevelDto levelDto)
+        {
+            var result = await _levelService.Update(levelDto, id);
+            return result.Status ? Ok(result) : BadRequest(result);
+        }
+
+        [HttpPost("Delete/{id}")]
+        public async Task<IActionResult> Delete([FromRoute]Guid id)
+        {
+            var result = await _levelService.Delete(id);
+            return result.Status ? Ok(result) : BadRequest(result);
+        }
     }
 }
