@@ -15,7 +15,7 @@ namespace Backend.Controllers
             _subjectService = subjectService;
         }
 
-        [HttpPost("Register")]
+        [HttpPost("Create")]
         public async Task<IActionResult> Register([FromForm] SubjectDto subjectDto)
         {
             var result = await _subjectService.Create(subjectDto);

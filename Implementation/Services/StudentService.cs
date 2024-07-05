@@ -187,7 +187,7 @@ namespace Backend.Implementation.Services
             {
                 return new BaseResponse<StudentDto>
                 {
-                    Message = "already exist",
+                    Message = "already ex ist",
                     Status = false
                 };
             }
